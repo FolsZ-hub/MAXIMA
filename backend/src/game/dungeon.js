@@ -197,24 +197,31 @@ function generateRoom(type, difficulty, roomIndex = 0, totalRooms = 5) {
 
   // Generate paths to next rooms (unless this is the last room)
   if (roomIndex < totalRooms - 1) {
-    const pathCount = randomInt(1, Math.min(3, totalRooms - roomIndex - 1));
     const availableDescs = [...PATH_DESCRIPTIONS];
 
-    for (let i = 0; i < pathCount; i++) {
-      const descIndex = randomInt(0, availableDescs.length - 1);
-      const desc = availableDescs.splice(descIndex, 1)[0];
-      room.paths.push({
-        targetRoomIndex: roomIndex + 1 + i,
-        description: desc || 'Un camino oscuro se abre ante ti.',
-      });
-    }
+    // ALWAYS include a path to the immediate next room (guarantees linear connectivity)
+    const firstDescIdx = randomInt(0, availableDescs.length - 1);
+    room.paths.push({
+      targetRoomIndex: roomIndex + 1,
+      description: availableDescs.splice(firstDescIdx, 1)[0]
+        || 'Un camino oscuro se abre ante ti.',
+    });
 
-    // Ensure at least one valid path
-    if (room.paths.length === 0) {
-      room.paths.push({
-        targetRoomIndex: roomIndex + 1,
-        description: pickRandom(PATH_DESCRIPTIONS),
-      });
+    // Optional shortcut paths that skip ahead 1-2 rooms
+    const maxExtra = Math.min(2, totalRooms - roomIndex - 2);
+    if (maxExtra > 0) {
+      const extraCount = randomInt(0, Math.min(maxExtra, 1));
+      for (let i = 0; i < extraCount; i++) {
+        const skipTarget = roomIndex + 2 + i;
+        if (skipTarget < totalRooms && availableDescs.length > 0) {
+          const descIdx = randomInt(0, availableDescs.length - 1);
+          room.paths.push({
+            targetRoomIndex: skipTarget,
+            description: availableDescs.splice(descIdx, 1)[0]
+              || pickRandom(PATH_DESCRIPTIONS),
+          });
+        }
+      }
     }
   }
 

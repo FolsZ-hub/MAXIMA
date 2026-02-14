@@ -125,7 +125,7 @@ function calculateAttack(attacker, target, roll) {
   } else {
     // Hit (roll >= 10)
     result.hit = true;
-    let baseDamage = randomInt(5, 15) + (attacker.attack || 0) - (target.defense || 0);
+    let baseDamage = randomInt(5, 15) + (attacker.attack || 0) - Math.floor((target.defense || 0) * 0.7);
     baseDamage = Math.max(1, baseDamage); // Minimum 1 damage on hit
 
     if (roll === 20) {

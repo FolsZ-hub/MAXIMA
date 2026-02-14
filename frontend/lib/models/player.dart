@@ -5,6 +5,9 @@ class Player {
   int smartCoins;
   List<String> legacyCharacters; // IDs of dead characters kept for legacy bonuses
   Map<String, dynamic> settings;
+  String? activeCharacterId;
+  String? createdAt;
+  String? lastLogin;
 
   Player({
     required this.uid,
@@ -12,6 +15,9 @@ class Player {
     this.smartCoins = 0,
     List<String>? legacyCharacters,
     Map<String, dynamic>? settings,
+    this.activeCharacterId,
+    this.createdAt,
+    this.lastLogin,
   })  : legacyCharacters = legacyCharacters ?? [],
         settings = settings ?? {
           'soundEnabled': true,
@@ -30,6 +36,9 @@ class Player {
               .toList() ??
           [],
       settings: (json['settings'] as Map<String, dynamic>?) ?? {},
+      activeCharacterId: json['activeCharacterId'] as String?,
+      createdAt: json['createdAt'] as String?,
+      lastLogin: json['lastLogin'] as String?,
     );
   }
 
@@ -41,6 +50,9 @@ class Player {
       'smartCoins': smartCoins,
       'legacyCharacters': legacyCharacters,
       'settings': settings,
+      if (activeCharacterId != null) 'activeCharacterId': activeCharacterId,
+      if (createdAt != null) 'createdAt': createdAt,
+      if (lastLogin != null) 'lastLogin': lastLogin,
     };
   }
 
@@ -51,6 +63,9 @@ class Player {
     int? smartCoins,
     List<String>? legacyCharacters,
     Map<String, dynamic>? settings,
+    String? activeCharacterId,
+    String? createdAt,
+    String? lastLogin,
   }) {
     return Player(
       uid: uid ?? this.uid,
@@ -58,6 +73,9 @@ class Player {
       smartCoins: smartCoins ?? this.smartCoins,
       legacyCharacters: legacyCharacters ?? this.legacyCharacters,
       settings: settings ?? this.settings,
+      activeCharacterId: activeCharacterId ?? this.activeCharacterId,
+      createdAt: createdAt ?? this.createdAt,
+      lastLogin: lastLogin ?? this.lastLogin,
     );
   }
 

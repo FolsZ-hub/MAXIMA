@@ -578,6 +578,14 @@ function distributeLoot(loot, players) {
   // If there is an item, it goes to a random player
   const itemWinnerIndex = loot.item ? randomInt(0, count - 1) : -1;
 
+  // Audit trail for loot distribution
+  console.log(
+    `[Loot] Distribuyendo a ${count} jugadores: ` +
+    `${loot.coins} monedas (${coinsEach}c/u, resto ${coinsRemainder} -> jugador ${luckyIndex}), ` +
+    `${loot.xp} XP (${xpEach}c/u)` +
+    (loot.item ? `, item "${loot.item.name}" -> jugador ${itemWinnerIndex}` : ', sin item')
+  );
+
   return players.map((player, index) => ({
     playerId: player.id || player.uid,
     username: player.username,
