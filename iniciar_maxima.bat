@@ -232,24 +232,21 @@ if "%FLUTTER_AVAILABLE%"=="1" (
     ) else if errorlevel 2 (
         start "MAXIMA RPG - Frontend (Windows)" cmd /k "title MAXIMA RPG - Frontend Windows & color 0D & echo. & echo ===================================================== & echo   MAXIMA RPG Frontend - Windows Desktop & echo ===================================================== & echo. & flutter run -d windows"
     ) else (
-        :: Detectar ruta de Brave Browser y setear CHROME_EXECUTABLE en el proceso padre
-        :: para que las ventanas hijas lo hereden automaticamente
+        :: Usar web-server mode y abrir Brave manualmente
+        :: (evita problemas con flutter -d chrome cuando Chrome no esta instalado)
+        start "MAXIMA RPG - Frontend (Brave)" cmd /k "title MAXIMA RPG - Frontend Brave & color 0D & echo. & echo ===================================================== & echo   MAXIMA RPG Frontend - Brave Web & echo ===================================================== & echo. & flutter run -d web-server --web-port 5173"
+        echo   Esperando a que el servidor web inicie...
+        timeout /t 10 /nobreak >nul
+        :: Abrir en Brave usando la ruta conocida de instalacion
         if exist "%LOCALAPPDATA%\BraveSoftware\Brave-Browser\Application\brave.exe" (
-            set "CHROME_EXECUTABLE=%LOCALAPPDATA%\BraveSoftware\Brave-Browser\Application\brave.exe"
+            echo   Abriendo Brave...
+            start "" "%LOCALAPPDATA%\BraveSoftware\Brave-Browser\Application\brave.exe" "http://localhost:5173"
         ) else if exist "%PROGRAMFILES%\BraveSoftware\Brave-Browser\Application\brave.exe" (
-            set "CHROME_EXECUTABLE=%PROGRAMFILES%\BraveSoftware\Brave-Browser\Application\brave.exe"
-        ) else if exist "%PROGRAMFILES(x86)%\BraveSoftware\Brave-Browser\Application\brave.exe" (
-            set "CHROME_EXECUTABLE=%PROGRAMFILES(x86)%\BraveSoftware\Brave-Browser\Application\brave.exe"
-        )
-        if defined CHROME_EXECUTABLE (
-            echo   Brave detectado: %CHROME_EXECUTABLE%
-            start "MAXIMA RPG - Frontend (Brave)" cmd /k "title MAXIMA RPG - Frontend Brave & color 0D & echo. & echo ===================================================== & echo   MAXIMA RPG Frontend - Brave Web & echo ===================================================== & echo. & flutter run -d chrome --web-port 5173"
+            echo   Abriendo Brave...
+            start "" "%PROGRAMFILES%\BraveSoftware\Brave-Browser\Application\brave.exe" "http://localhost:5173"
         ) else (
-            echo   [AVISO] No se encontro Brave en las rutas habituales.
-            echo   Lanzando web-server y abriendo Brave manualmente...
-            start "MAXIMA RPG - Frontend (Brave)" cmd /k "title MAXIMA RPG - Frontend Brave & color 0D & echo. & echo ===================================================== & echo   MAXIMA RPG Frontend - Brave Web & echo ===================================================== & echo. & flutter run -d web-server --web-port 5173"
-            timeout /t 8 /nobreak >nul
-            start "" brave http://localhost:5173
+            echo   [AVISO] No se encontro Brave. Abriendo en navegador predeterminado...
+            start "" "http://localhost:5173"
         )
     )
 
