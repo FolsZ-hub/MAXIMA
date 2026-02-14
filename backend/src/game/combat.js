@@ -194,8 +194,8 @@ function calculateHunt(character, roll, difficulty = 'easy') {
   if (combatResult.targetDefeated) {
     // Enemy is dead - generate loot
     loot = generateLoot(diff, false);
-  } else if (!combatResult.fumble || !combatResult.attackerDefeated) {
-    // Enemy retaliates
+  } else if (!combatResult.targetDefeated) {
+    // Enemy retaliates if still alive
     const enemyRoll = rollD20();
     enemyAttack = calculateAttack(enemy, character, enemyRoll);
 

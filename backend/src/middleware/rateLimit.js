@@ -15,10 +15,9 @@ const COOLDOWN_DEFAULT_MS = 1000;
 
 // Events that use the longer (attack) cooldown
 const ATTACK_EVENTS = new Set([
-  'combat:attack',
-  'combat:skill',
-  'combat:special',
-  'dungeon:attack',
+  'intentAttack',
+  'intentHunt',
+  'intentUseItem',
 ]);
 
 // Events that should bypass the rate limiter entirely (system / internal)

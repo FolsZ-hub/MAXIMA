@@ -23,6 +23,16 @@ const Player = require('./src/models/player');
 const Character = require('./src/models/character');
 const Dungeon = require('./src/models/dungeon');
 
+// Game modules
+const { registerCombatHandlers } = require('./src/game/combat');
+const { registerCommandHandlers } = require('./src/game/commands');
+const { registerDungeonHandlers } = require('./src/game/dungeon');
+const { registerLegacyHandlers } = require('./src/game/legacy');
+
+// Multiplayer modules
+const { registerRoomHandlers } = require('./src/multiplayer/rooms');
+const { registerSyncHandlers } = require('./src/multiplayer/sync');
+
 // ---------------------------------------------------------------------------
 // Express application setup
 // ---------------------------------------------------------------------------
@@ -70,13 +80,15 @@ const connectedPlayers = new Map();
  * Inside that function the module attaches its own socket.on(...) listeners.
  */
 function registerGameModules(socket) {
-  const context = { connectedPlayers, db, admin, Player, Character, Dungeon };
+  // Register game logic handlers
+  registerCombatHandlers(io, socket);
+  registerCommandHandlers(io, socket);
+  registerDungeonHandlers(io, socket);
+  registerLegacyHandlers(io, socket);
 
-  // Add new game modules here as the project grows:
-  // require('./src/modules/combat')(socket, io, context);
-  // require('./src/modules/dungeon')(socket, io, context);
-  // require('./src/modules/chat')(socket, io, context);
-  // require('./src/modules/inventory')(socket, io, context);
+  // Register multiplayer handlers
+  registerRoomHandlers(io, socket);
+  registerSyncHandlers(io, socket);
 }
 
 // ---------------------------------------------------------------------------
