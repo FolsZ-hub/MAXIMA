@@ -175,6 +175,11 @@ if "%FLUTTER_AVAILABLE%"=="1" (
         echo.
     )
 
+    :: Limpiar cache de compilacion y forzar resolucion fresca de dependencias
+    echo   Limpiando cache de compilacion...
+    call flutter clean >nul 2>&1
+    if exist "pubspec.lock" del "pubspec.lock"
+
     call flutter pub get
     if %errorlevel% neq 0 (
         color 0E
