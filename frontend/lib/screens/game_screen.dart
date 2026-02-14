@@ -46,6 +46,7 @@ class _GameScreenState extends State<GameScreen> {
   List<Map<String, String>> _pathChoices = [];
 
   Dungeon? _dungeon;
+  Map<String, dynamic> _currentDungeonState = {};
 
   @override
   void initState() {
@@ -138,22 +139,26 @@ class _GameScreenState extends State<GameScreen> {
           }
           break;
 
-        case SocketMessageType.dungeonProgress:
-          _addSystemMessage(msg.data['text'] ?? 'Progreso en la mazmorra.');
+        case SocketMessageType.dungeonEntered:
+          _currentDungeonState = Map<String, dynamic>.from(msg.data);
+          _addSystemMessage(msg.data['text'] ?? 'Has entrado a la mazmorra.');
           break;
 
-        case SocketMessageType.pathChoice:
-          // Show path choice buttons.
-          final choices = msg.data['choices'] as List<dynamic>?;
-          if (choices != null) {
-            _pathChoices = choices
-                .map((c) => {
-                      'id': (c['id'] ?? '').toString(),
-                      'label': (c['label'] ?? '').toString(),
+        case SocketMessageType.dungeonRoom:
+          _currentDungeonState = Map<String, dynamic>.from(msg.data);
+          // Show path choice buttons from room paths.
+          final paths = msg.data['paths'] as List<dynamic>?;
+          if (paths != null) {
+            _pathChoices = paths
+                .asMap()
+                .entries
+                .map((e) => {
+                      'id': e.key.toString(),
+                      'label': (e.value['description'] ?? 'Camino ${e.key + 1}').toString(),
                     })
                 .toList();
           }
-          _addMasterMessage(msg.data['text'] ?? 'Elige tu camino...');
+          _addMasterMessage(msg.data['text'] ?? msg.data['description'] ?? 'Elige tu camino...');
           break;
 
         case SocketMessageType.systemMessage:
@@ -253,7 +258,8 @@ class _GameScreenState extends State<GameScreen> {
   }
 
   void _selectPath(String pathId) {
-    _socketService.selectPath(pathId);
+    final pathIndex = int.tryParse(pathId) ?? 0;
+    _socketService.selectPath(_currentDungeonState, pathIndex);
     setState(() {
       _pathChoices = [];
       _setSpriteState(SpriteState.walkRight);

@@ -369,7 +369,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             children: [
               Row(
                 children: [
-                  const Icon(Icons.skull, color: RPGColors.darkRed, size: 24),
+                  const Icon(Icons.dangerous, color: RPGColors.darkRed, size: 24),
                   const SizedBox(width: 8),
                   Expanded(
                     child: Column(

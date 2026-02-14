@@ -168,6 +168,13 @@ if "%FLUTTER_AVAILABLE%"=="1" (
     :: Crear directorio assets si no existe
     if not exist "assets" mkdir assets
 
+    :: Habilitar soporte web si no existe
+    if not exist "web" (
+        echo   Habilitando soporte web...
+        call flutter create --platforms web .
+        echo.
+    )
+
     call flutter pub get
     if %errorlevel% neq 0 (
         color 0E

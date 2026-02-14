@@ -116,7 +116,7 @@ ThemeData buildRPGTheme() {
       titleTextStyle: RPGTextStyles.heading.copyWith(fontSize: 18),
       iconTheme: const IconThemeData(color: RPGColors.gold),
     ),
-    cardTheme: CardTheme(
+    cardTheme: CardThemeData(
       color: RPGColors.darkGrayLight,
       elevation: 4,
       shape: RoundedRectangleBorder(
