@@ -54,12 +54,20 @@ class Character {
    * @param {Array}    [data.inventory]
    * @param {boolean}  [data.isAlive=true]
    * @param {string}   [data.createdAt]
+   * @param {string}   [data.race]          - Character race (Humano, Elfo, etc.)
+   * @param {string}   [data.subclass]      - Character subclass (Espadachín, etc.)
+   * @param {Object}   [data.weapon]        - Equipped weapon data
+   * @param {Object}   [data.stats]         - Base stats {fuerza, destreza, constitucion, carisma}
    */
   constructor({
     characterId = null,
     playerId,
     name,
     characterClass,
+    race = '',
+    subclass = '',
+    weapon = null,
+    stats = null,
     level = 1,
     hp = null,
     maxHp = null,
@@ -90,6 +98,10 @@ class Character {
     this.xp = xp;
     this.attack = attack !== null ? attack : base.attack;
     this.defense = defense !== null ? defense : base.defense;
+    this.race = race;
+    this.subclass = subclass;
+    this.weapon = weapon || {};
+    this.stats = stats || {};
     this.inventory = inventory;
     this.isAlive = isAlive;
     this.createdAt = createdAt || new Date().toISOString();
@@ -109,6 +121,10 @@ class Character {
       playerId: this.playerId,
       name: this.name,
       characterClass: this.characterClass,
+      race: this.race,
+      subclass: this.subclass,
+      weapon: this.weapon,
+      stats: this.stats,
       level: this.level,
       hp: this.hp,
       maxHp: this.maxHp,
@@ -133,6 +149,10 @@ class Character {
       playerId: data.playerId,
       name: data.name,
       characterClass: data.characterClass,
+      race: data.race || '',
+      subclass: data.subclass || '',
+      weapon: data.weapon || {},
+      stats: data.stats || {},
       level: data.level,
       hp: data.hp,
       maxHp: data.maxHp,
@@ -281,8 +301,10 @@ class Character {
    */
   getSummary() {
     const status = this.isAlive ? 'Vivo' : 'Caido';
+    const raceStr = this.race ? `${this.race} ` : '';
+    const subStr = this.subclass ? `/${this.subclass}` : '';
     return (
-      `[${this.characterClass}] ${this.name} | ` +
+      `[${raceStr}${this.characterClass}${subStr}] ${this.name} | ` +
       `Nv.${this.level} | HP: ${this.hp}/${this.maxHp} | ` +
       `ATK: ${this.attack} DEF: ${this.defense} | ${status}`
     );

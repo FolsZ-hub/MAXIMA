@@ -5,7 +5,6 @@ import 'package:maxima_rpg/config/theme.dart';
 import 'package:maxima_rpg/config/routes.dart';
 import 'package:maxima_rpg/services/auth_service.dart';
 import 'package:maxima_rpg/services/firebase_service.dart';
-import 'package:maxima_rpg/models/character.dart';
 
 /// Registration screen themed to match the dungeon aesthetic.
 class RegisterScreen extends StatefulWidget {
@@ -22,31 +21,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   bool _obscurePassword = true;
-
-  // Character class selection.
-  String _selectedClass = 'Guerrero';
-  final List<Map<String, dynamic>> _classes = [
-    {
-      'name': 'Guerrero',
-      'icon': Icons.shield,
-      'description': 'Fuerte en combate cuerpo a cuerpo',
-    },
-    {
-      'name': 'Mago',
-      'icon': Icons.auto_fix_high,
-      'description': 'Domina las artes arcanas',
-    },
-    {
-      'name': 'Ladronzuelo',
-      'icon': Icons.visibility,
-      'description': 'Sigiloso y letal en las sombras',
-    },
-    {
-      'name': 'Clerigo',
-      'icon': Icons.favorite,
-      'description': 'Sanador y protector del grupo',
-    },
-  ];
 
   @override
   void dispose() {
@@ -70,20 +44,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
     );
 
     if (success && mounted) {
-      // Create the initial character for the player.
+      // Navigate to character creation screen for full character setup.
       final user = authService.user;
-      if (user != null) {
-        final character = Character(
-          characterId: '${user.uid}_char_1',
-          playerId: user.uid,
-          name: _characterNameController.text.trim(),
-          characterClass: _selectedClass,
+      if (user != null && mounted) {
+        Navigator.pushReplacementNamed(
+          context,
+          AppRoutes.characterCreation,
+          arguments: {'userId': user.uid},
         );
-        await firebaseService.createCharacter(character);
-      }
-
-      if (mounted) {
-        Navigator.pushReplacementNamed(context, AppRoutes.lobby);
       }
     }
   }
@@ -249,16 +217,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   ),
                   const SizedBox(height: 24),
 
-                  // Class selection.
-                  Text(
-                    'Elige tu Clase',
-                    style: RPGTextStyles.subheading,
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(height: 12),
-                  _buildClassSelector(),
-                  const SizedBox(height: 12),
-
                   // Error message display.
                   Consumer<AuthService>(
                     builder: (context, auth, _) {
@@ -299,7 +257,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                   ),
                                 )
                               : Text(
-                                  'Comenzar Aventura',
+                                  'Crear Cuenta',
                                   style: RPGTextStyles.button,
                                 ),
                         ),
@@ -316,70 +274,4 @@ class _RegisterScreenState extends State<RegisterScreen> {
     );
   }
 
-  /// Builds the character class selector as a grid of tappable cards.
-  Widget _buildClassSelector() {
-    return GridView.builder(
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2,
-        crossAxisSpacing: 12,
-        mainAxisSpacing: 12,
-        childAspectRatio: 1.5,
-      ),
-      itemCount: _classes.length,
-      itemBuilder: (context, index) {
-        final classData = _classes[index];
-        final isSelected = _selectedClass == classData['name'];
-
-        return GestureDetector(
-          onTap: () {
-            setState(() {
-              _selectedClass = classData['name'] as String;
-            });
-          },
-          child: AnimatedContainer(
-            duration: const Duration(milliseconds: 200),
-            decoration: BoxDecoration(
-              color: isSelected
-                  ? RPGColors.darkPurple.withOpacity(0.4)
-                  : RPGColors.darkGrayLight,
-              borderRadius: BorderRadius.circular(10),
-              border: Border.all(
-                color: isSelected ? RPGColors.gold : RPGColors.darkPurple,
-                width: isSelected ? 2 : 1,
-              ),
-            ),
-            padding: const EdgeInsets.all(10),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(
-                  classData['icon'] as IconData,
-                  color: isSelected ? RPGColors.gold : RPGColors.grayText,
-                  size: 28,
-                ),
-                const SizedBox(height: 6),
-                Text(
-                  classData['name'] as String,
-                  style: GoogleFonts.cinzel(
-                    fontSize: 13,
-                    fontWeight: FontWeight.w700,
-                    color: isSelected ? RPGColors.gold : RPGColors.white,
-                  ),
-                ),
-                Text(
-                  classData['description'] as String,
-                  style: RPGTextStyles.systemMessage.copyWith(fontSize: 9),
-                  textAlign: TextAlign.center,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ],
-            ),
-          ),
-        );
-      },
-    );
-  }
 }

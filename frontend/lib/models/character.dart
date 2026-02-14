@@ -4,6 +4,10 @@ class Character {
   final String playerId;
   String name;
   String characterClass; // Guerrero, Mago, Ladronzuelo, Clerigo
+  String race; // Humano, Elfo, Enano, Orco, No-Muerto
+  String subclass; // Espadachín, Berserker, Piromante, etc.
+  Map<String, dynamic> weapon; // Equipped weapon data
+  Map<String, int> stats; // fuerza, destreza, constitucion, carisma
   int level;
   int hp;
   int maxHp;
@@ -18,6 +22,10 @@ class Character {
     required this.playerId,
     required this.name,
     required this.characterClass,
+    this.race = '',
+    this.subclass = '',
+    Map<String, dynamic>? weapon,
+    Map<String, int>? stats,
     this.level = 1,
     this.hp = 100,
     this.maxHp = 100,
@@ -26,7 +34,9 @@ class Character {
     this.defense = 5,
     List<Map<String, dynamic>>? inventory,
     this.isAlive = true,
-  }) : inventory = inventory ?? [];
+  })  : weapon = weapon ?? {},
+        stats = stats ?? {},
+        inventory = inventory ?? [];
 
   /// Creates a [Character] from a Firestore document map.
   factory Character.fromJson(Map<String, dynamic> json) {
@@ -35,6 +45,15 @@ class Character {
       playerId: json['playerId'] as String? ?? '',
       name: json['name'] as String? ?? 'Sin Nombre',
       characterClass: json['characterClass'] as String? ?? 'Guerrero',
+      race: json['race'] as String? ?? '',
+      subclass: json['subclass'] as String? ?? '',
+      weapon: json['weapon'] != null
+          ? Map<String, dynamic>.from(json['weapon'] as Map)
+          : {},
+      stats: json['stats'] != null
+          ? Map<String, int>.from(
+              (json['stats'] as Map).map((k, v) => MapEntry(k.toString(), v as int)))
+          : {},
       level: json['level'] as int? ?? 1,
       hp: json['hp'] as int? ?? 100,
       maxHp: json['maxHp'] as int? ?? 100,
@@ -56,6 +75,10 @@ class Character {
       'playerId': playerId,
       'name': name,
       'characterClass': characterClass,
+      'race': race,
+      'subclass': subclass,
+      'weapon': weapon,
+      'stats': stats,
       'level': level,
       'hp': hp,
       'maxHp': maxHp,
@@ -82,6 +105,10 @@ class Character {
     String? playerId,
     String? name,
     String? characterClass,
+    String? race,
+    String? subclass,
+    Map<String, dynamic>? weapon,
+    Map<String, int>? stats,
     int? level,
     int? hp,
     int? maxHp,
@@ -96,6 +123,10 @@ class Character {
       playerId: playerId ?? this.playerId,
       name: name ?? this.name,
       characterClass: characterClass ?? this.characterClass,
+      race: race ?? this.race,
+      subclass: subclass ?? this.subclass,
+      weapon: weapon ?? this.weapon,
+      stats: stats ?? this.stats,
       level: level ?? this.level,
       hp: hp ?? this.hp,
       maxHp: maxHp ?? this.maxHp,
@@ -109,5 +140,5 @@ class Character {
 
   @override
   String toString() =>
-      'Character($name, $characterClass, Lv$level, HP:$hp/$maxHp)';
+      'Character($name, $race $characterClass/$subclass, Lv$level, HP:$hp/$maxHp)';
 }

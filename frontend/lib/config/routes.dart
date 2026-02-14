@@ -6,6 +6,7 @@ import 'package:maxima_rpg/screens/profile_screen.dart';
 import 'package:maxima_rpg/screens/settings_screen.dart';
 import 'package:maxima_rpg/screens/dungeon_select_screen.dart';
 import 'package:maxima_rpg/screens/game_screen.dart';
+import 'package:maxima_rpg/screens/character_creation_screen.dart';
 
 /// Route name constants used for navigation throughout the app.
 class AppRoutes {
@@ -13,6 +14,7 @@ class AppRoutes {
 
   static const String login = '/login';
   static const String register = '/register';
+  static const String characterCreation = '/character_creation';
   static const String lobby = '/lobby';
   static const String profile = '/profile';
   static const String settings = '/settings';
@@ -30,6 +32,11 @@ Route<dynamic> generateRoute(RouteSettings settings) {
 
     case AppRoutes.register:
       return _buildRoute(const RegisterScreen(), settings);
+
+    case AppRoutes.characterCreation:
+      final args = settings.arguments as Map<String, dynamic>?;
+      final userId = args?['userId'] as String? ?? '';
+      return _buildRoute(CharacterCreationScreen(userId: userId), settings);
 
     case AppRoutes.lobby:
       return _buildRoute(const LobbyScreen(), settings);
