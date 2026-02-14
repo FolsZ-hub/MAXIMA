@@ -1,5 +1,7 @@
 node_modules/
 .env
+firebase_config.json
+serviceAccountKey.json
 .dart_tool/
 .packages
 build/

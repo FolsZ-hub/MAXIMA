@@ -1,0 +1,8 @@
+{
+  "FIREBASE_API_KEY": "tu-api-key-aqui",
+  "FIREBASE_AUTH_DOMAIN": "mijuegorpg.firebaseapp.com",
+  "FIREBASE_PROJECT_ID": "mijuegorpg",
+  "FIREBASE_STORAGE_BUCKET": "mijuegorpg.firebasestorage.app",
+  "FIREBASE_MESSAGING_SENDER_ID": "tu-sender-id-aqui",
+  "FIREBASE_APP_ID": "tu-app-id-aqui"
+}

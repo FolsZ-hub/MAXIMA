@@ -1,15 +1,19 @@
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
 import 'package:maxima_rpg/config/theme.dart';
 import 'package:maxima_rpg/config/routes.dart';
+import 'package:maxima_rpg/config/firebase_options.dart';
 import 'package:maxima_rpg/services/auth_service.dart';
 import 'package:maxima_rpg/services/socket_service.dart';
 import 'package:maxima_rpg/services/firebase_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
+  await Firebase.initializeApp(
+    options: kIsWeb ? DefaultFirebaseOptions.web : null,
+  );
   runApp(const MaximaRPGApp());
 }
 

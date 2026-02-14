@@ -175,6 +175,53 @@ if "%FLUTTER_AVAILABLE%"=="1" (
         echo.
     )
 
+    :: Configurar Firebase Web SDK si no existe firebase_config.json
+    if not exist "firebase_config.json" (
+        if exist "firebase_config.json.example" (
+            copy "firebase_config.json.example" "firebase_config.json" >nul
+        ) else (
+            (
+                echo {
+                echo   "FIREBASE_API_KEY": "tu-api-key-aqui",
+                echo   "FIREBASE_AUTH_DOMAIN": "tu-project-id.firebaseapp.com",
+                echo   "FIREBASE_PROJECT_ID": "tu-project-id",
+                echo   "FIREBASE_STORAGE_BUCKET": "tu-project-id.firebasestorage.app",
+                echo   "FIREBASE_MESSAGING_SENDER_ID": "tu-sender-id",
+                echo   "FIREBASE_APP_ID": "tu-app-id"
+                echo }
+            ) > "firebase_config.json"
+        )
+        echo.
+        color 0E
+        echo   =====================================================
+        echo   IMPORTANTE: Configura frontend\firebase_config.json
+        echo   con tu configuracion web de Firebase.
+        echo.
+        echo   Archivo: %~dp0frontend\firebase_config.json
+        echo.
+        echo   Obten estos datos de Firebase Console:
+        echo     Configuracion del proyecto ^> General ^> Tus apps
+        echo     ^> Agregar app ^> Web ^(icono ^<^/^>^)
+        echo.
+        echo   Necesitas:
+        echo     - FIREBASE_API_KEY
+        echo     - FIREBASE_AUTH_DOMAIN
+        echo     - FIREBASE_PROJECT_ID
+        echo     - FIREBASE_STORAGE_BUCKET
+        echo     - FIREBASE_MESSAGING_SENDER_ID
+        echo     - FIREBASE_APP_ID
+        echo   =====================================================
+        echo.
+        color 0A
+        choice /C SN /M "Ya configuraste firebase_config.json? (S=Si, N=Abrir para editar)"
+        if errorlevel 2 (
+            start notepad "%~dp0frontend\firebase_config.json"
+            echo.
+            echo   Edita firebase_config.json, guardalo, y presiona una tecla...
+            pause >nul
+        )
+    )
+
     :: Limpiar cache de compilacion y forzar resolucion fresca de dependencias
     echo   Limpiando cache de compilacion...
     call flutter clean >nul 2>&1
@@ -246,7 +293,7 @@ if "%FLUTTER_AVAILABLE%"=="1" (
     ) else (
         :: Usar web-server mode y abrir Brave manualmente
         :: (evita problemas con flutter -d chrome cuando Chrome no esta instalado)
-        start "MAXIMA RPG - Frontend (Brave)" cmd /k "title MAXIMA RPG - Frontend Brave & color 0D & echo. & echo ===================================================== & echo   MAXIMA RPG Frontend - Brave Web & echo ===================================================== & echo. & flutter run -d web-server --web-port 5173"
+        start "MAXIMA RPG - Frontend (Brave)" cmd /k "title MAXIMA RPG - Frontend Brave & color 0D & echo. & echo ===================================================== & echo   MAXIMA RPG Frontend - Brave Web & echo ===================================================== & echo. & flutter run -d web-server --web-port 5173 --dart-define-from-file=firebase_config.json"
         echo   Esperando a que el servidor web inicie...
         timeout /t 10 /nobreak >nul
         :: Abrir en Brave usando la ruta conocida de instalacion
