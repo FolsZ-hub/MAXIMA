@@ -238,12 +238,12 @@ if "%FLUTTER_AVAILABLE%"=="1" (
         echo   Esperando a que el servidor web inicie...
         timeout /t 10 /nobreak >nul
         :: Abrir en Brave usando la ruta conocida de instalacion
-        if exist "%LOCALAPPDATA%\BraveSoftware\Brave-Browser\Application\brave.exe" (
-            echo   Abriendo Brave...
-            start "" "%LOCALAPPDATA%\BraveSoftware\Brave-Browser\Application\brave.exe" "http://localhost:5173"
-        ) else if exist "%PROGRAMFILES%\BraveSoftware\Brave-Browser\Application\brave.exe" (
+        if exist "%PROGRAMFILES%\BraveSoftware\Brave-Browser\Application\brave.exe" (
             echo   Abriendo Brave...
             start "" "%PROGRAMFILES%\BraveSoftware\Brave-Browser\Application\brave.exe" "http://localhost:5173"
+        ) else if exist "%LOCALAPPDATA%\BraveSoftware\Brave-Browser\Application\brave.exe" (
+            echo   Abriendo Brave...
+            start "" "%LOCALAPPDATA%\BraveSoftware\Brave-Browser\Application\brave.exe" "http://localhost:5173"
         ) else (
             echo   [AVISO] No se encontro Brave. Abriendo en navegador predeterminado...
             start "" "http://localhost:5173"
